@@ -2,7 +2,7 @@ import app from './app.js';
 import { config } from './config/env.js';
 import prisma from './config/prisma.js';
 
-const PORT = config.port;
+const PORT = process.env.PORT || config.port || 8080;
 
 async function startServer() {
   try {
@@ -10,15 +10,15 @@ async function startServer() {
     await prisma.$connect();
     console.log('✅ Connected to database successfully.');
 
-    app.listen(PORT, () => {
-      console.log(`🚀 Lear(n)alie backend running on http://localhost:${PORT}`);
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Lear(n)alie backend running on port ${PORT}`);
       console.log(`📡 Environment: ${config.nodeEnv}`);
     });
   } catch (error) {
     console.error('❌ Failed to connect to database:', error.message);
     console.log('⚠️  Starting server in degraded mode (API endpoints waiting for DB)...');
-    app.listen(PORT, () => {
-      console.log(`🚀 Lear(n)alie backend running on http://localhost:${PORT} (Database pending)`);
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Lear(n)alie backend running on port ${PORT} (Database pending)`);
     });
   }
 }
